@@ -1,8 +1,8 @@
-use crate::tools::WslMcp;
 use crate::tools::common::format_output;
+use crate::tools::WslMcp;
 use rmcp::{tool, tool_router};
 
-#[tool_router(router = distro_available_router, vis = "pub(super)")]
+#[tool_router(router = distro_available_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_available",

@@ -1,5 +1,5 @@
-use crate::tools::WslMcp;
 use crate::tools::common::format_output;
+use crate::tools::WslMcp;
 use rmcp::handler::server::wrapper::Parameters;
 use rmcp::{tool, tool_router};
 
@@ -16,7 +16,7 @@ struct WslImportParams {
     version: Option<u8>,
 }
 
-#[tool_router(router = distro_import_router, vis = "pub(super)")]
+#[tool_router(router = distro_import_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_import",
@@ -45,7 +45,7 @@ struct WslExportParams {
     file: String,
 }
 
-#[tool_router(router = distro_export_router, vis = "pub(super)")]
+#[tool_router(router = distro_export_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_export",

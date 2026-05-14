@@ -1,5 +1,5 @@
-use crate::tools::WslMcp;
 use crate::tools::common::format_output;
+use crate::tools::WslMcp;
 use rmcp::handler::server::wrapper::Parameters;
 use rmcp::{tool, tool_router};
 
@@ -7,7 +7,7 @@ use rmcp::{tool, tool_router};
 // wsl_system_info
 // ---------------------------------------------------------------------------
 
-#[tool_router(router = system_info_router, vis = "pub(super)")]
+#[tool_router(router = system_info_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_system_info",
@@ -31,7 +31,7 @@ struct WslDiskInfoParams {
     distro: String,
 }
 
-#[tool_router(router = disk_info_router, vis = "pub(super)")]
+#[tool_router(router = disk_info_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_disk_info",

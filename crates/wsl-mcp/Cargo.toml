@@ -1,0 +1,19 @@
+[package]
+name = "wsl-mcp"
+version = "0.1.0"
+description = "MCP server and CLI for managing WSL distributions"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+wsl-mcp-core = { path = "../wsl-mcp-core" }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+clap = { workspace = true }
+rmcp = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+schemars = "1"

@@ -1,4 +1,4 @@
-mod terminate;
-mod shutdown;
-mod set_version;
 mod info;
+mod set_version;
+mod shutdown;
+mod terminate;

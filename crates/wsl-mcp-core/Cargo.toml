@@ -1,0 +1,16 @@
+[package]
+name = "wsl-mcp-core"
+version = "0.1.0"
+description = "Core library for wsl-mcp: WSL CLI wrapper and file operations"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+base64 = "0.22"
+shlex = "1"

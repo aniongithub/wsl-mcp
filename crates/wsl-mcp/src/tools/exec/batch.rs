@@ -13,22 +13,18 @@ struct WslExecBatchParams {
     user: Option<String>,
 }
 
-#[tool_router(router = exec_batch_router, vis = "pub(super)")]
+#[tool_router(router = exec_batch_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_exec_batch",
         description = "Execute multiple commands sequentially in a WSL distribution. Stops on first failure. Useful for setup sequences."
     )]
-    async fn wsl_exec_batch(
-        &self,
-        Parameters(params): Parameters<WslExecBatchParams>,
-    ) -> String {
+    async fn wsl_exec_batch(&self, Parameters(params): Parameters<WslExecBatchParams>) -> String {
         let mut results = Vec::new();
         let mut all_success = true;
 
         for cmd in &params.commands {
-            match wsl_mcp_core::wsl::exec(&params.distro, cmd, None, params.user.as_deref()).await
-            {
+            match wsl_mcp_core::wsl::exec(&params.distro, cmd, None, params.user.as_deref()).await {
                 Ok(output) => {
                     let success = output.exit_code == 0;
                     results.push(serde_json::json!({

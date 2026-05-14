@@ -1,5 +1,5 @@
-use crate::tools::WslMcp;
 use crate::tools::common::format_output;
+use crate::tools::WslMcp;
 use rmcp::handler::server::wrapper::Parameters;
 use rmcp::{tool, tool_router};
 
@@ -13,11 +13,13 @@ struct WslExecParams {
     #[schemars(description = "Working directory inside the distribution")]
     workdir: Option<String>,
     #[serde(default)]
-    #[schemars(description = "User to run the command as (defaults to distribution's default user)")]
+    #[schemars(
+        description = "User to run the command as (defaults to distribution's default user)"
+    )]
     user: Option<String>,
 }
 
-#[tool_router(router = exec_router, vis = "pub(super)")]
+#[tool_router(router = exec_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_exec",

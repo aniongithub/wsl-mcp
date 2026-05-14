@@ -1,5 +1,5 @@
-use crate::tools::WslMcp;
 use crate::tools::common::format_output;
+use crate::tools::WslMcp;
 use rmcp::handler::server::wrapper::Parameters;
 use rmcp::{tool, tool_router};
 
@@ -7,14 +7,16 @@ use rmcp::{tool, tool_router};
 struct WslShellParams {
     #[schemars(description = "Name of the WSL distribution")]
     distro: String,
-    #[schemars(description = "Command to execute in a login shell (loads .bashrc, .profile, etc.)")]
+    #[schemars(
+        description = "Command to execute in a login shell (loads .bashrc, .profile, etc.)"
+    )]
     command: String,
     #[serde(default)]
     #[schemars(description = "User to run as")]
     user: Option<String>,
 }
 
-#[tool_router(router = shell_router, vis = "pub(super)")]
+#[tool_router(router = shell_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_shell",

@@ -1,5 +1,5 @@
-use crate::tools::WslMcp;
 use crate::tools::common::format_output;
+use crate::tools::WslMcp;
 use rmcp::handler::server::wrapper::Parameters;
 use rmcp::{tool, tool_router};
 
@@ -9,7 +9,7 @@ struct WslInstallParams {
     distro: String,
 }
 
-#[tool_router(router = distro_install_router, vis = "pub(super)")]
+#[tool_router(router = distro_install_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_install",

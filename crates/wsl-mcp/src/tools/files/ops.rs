@@ -1,5 +1,5 @@
-use crate::tools::WslMcp;
 use crate::tools::common::format_output;
+use crate::tools::WslMcp;
 use rmcp::handler::server::wrapper::Parameters;
 use rmcp::{tool, tool_router};
 
@@ -17,14 +17,16 @@ struct WslFileReadParams {
     #[schemars(description = "Start line number (1-based, inclusive)")]
     start_line: Option<usize>,
     #[serde(default)]
-    #[schemars(description = "End line number (1-based, inclusive). Use -1 or omit for end of file.")]
+    #[schemars(
+        description = "End line number (1-based, inclusive). Use -1 or omit for end of file."
+    )]
     end_line: Option<i64>,
     #[serde(default)]
     #[schemars(description = "User to run as")]
     user: Option<String>,
 }
 
-#[tool_router(router = file_read_router, vis = "pub(super)")]
+#[tool_router(router = file_read_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_file_read",
@@ -38,8 +40,9 @@ impl WslMcp {
                 if output.exit_code != 0 {
                     return format_output(&output);
                 }
-                let end =
-                    params.end_line.and_then(|e| if e < 0 { None } else { Some(e as usize) });
+                let end = params
+                    .end_line
+                    .and_then(|e| if e < 0 { None } else { Some(e as usize) });
                 wsl_mcp_core::file_ops::format_with_line_numbers(
                     &output.stdout,
                     params.start_line,
@@ -68,7 +71,7 @@ struct WslFileWriteParams {
     user: Option<String>,
 }
 
-#[tool_router(router = file_write_router, vis = "pub(super)")]
+#[tool_router(router = file_write_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_file_write",
@@ -114,7 +117,7 @@ struct WslFileEditParams {
     user: Option<String>,
 }
 
-#[tool_router(router = file_edit_router, vis = "pub(super)")]
+#[tool_router(router = file_edit_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_file_edit",
@@ -145,14 +148,16 @@ struct WslFileListParams {
     #[schemars(description = "Name of the WSL distribution")]
     distro: String,
     #[serde(default)]
-    #[schemars(description = "Path to the directory inside the distribution (defaults to home directory)")]
+    #[schemars(
+        description = "Path to the directory inside the distribution (defaults to home directory)"
+    )]
     path: Option<String>,
     #[serde(default)]
     #[schemars(description = "User to run as")]
     user: Option<String>,
 }
 
-#[tool_router(router = file_list_router, vis = "pub(super)")]
+#[tool_router(router = file_list_router, vis = "pub(in crate::tools)")]
 impl WslMcp {
     #[tool(
         name = "wsl_file_list",
