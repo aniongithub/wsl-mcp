@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>wsl-mcp — Give your AI agent access to WSL</title>
-  <meta name="description" content="An MCP server that lets AI coding agents create, manage, and work inside WSL distributions — safely, through structured tools.">
+  <meta name="description" content="An MCP server that lets AI coding agents manage WSL distributions — run commands, edit files, manage distros — safely through structured tools.">
   <meta property="og:title" content="wsl-mcp">
   <meta property="og:description" content="Give your AI agent access to WSL — safely, through MCP tools.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://aniongithub.github.io/wsl-mcp/">
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/0/0c/Logo_WSL_Square44x44Logo.altform-lightunplated_targetsize-256.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -20,7 +21,7 @@
   <nav class="nav">
     <div class="nav-inner">
       <a href="#" class="nav-logo">
-        <span class="logo-icon">⬡</span>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Logo_WSL_Square44x44Logo.altform-lightunplated_targetsize-256.svg" alt="WSL">
         <span>wsl-mcp</span>
       </a>
       <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
@@ -28,6 +29,7 @@
       </button>
       <div class="nav-links">
         <a href="#">Home</a>
+        <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Get Started</a>
         <a href="#why">Why</a>
         <a href="#how">How it works</a>
         <a href="#tools">Tools</a>
@@ -54,25 +56,9 @@
       </p>
       <div class="hero-cta">
         <div class="install-wrapper">
-          <div class="install-tabs">
-            <button class="install-tab active" data-platform="windows" onclick="switchInstallTab('windows', this)">Windows</button>
-            <button class="install-tab" data-platform="unix" onclick="switchInstallTab('unix', this)">Linux / WSL</button>
-          </div>
-          <div class="install-box" id="install-windows">
-            <code id="install-cmd-windows">irm https://github.com/aniongithub/wsl-mcp/releases/latest/download/install.ps1 | iex</code>
-            <button class="copy-btn" onclick="copyText('install-cmd-windows', this)" title="Copy to clipboard">
-              <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-              <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </button>
-          </div>
-          <div class="install-box" id="install-unix" style="display:none">
-            <code id="install-cmd-unix">curl -fsSL https://github.com/aniongithub/wsl-mcp/releases/latest/download/install.sh | bash</code>
-            <button class="copy-btn" onclick="copyText('install-cmd-unix', this)" title="Copy to clipboard">
+          <div class="install-box">
+            <code id="install-cmd">irm https://github.com/aniongithub/wsl-mcp/releases/latest/download/install.ps1 | iex</code>
+            <button class="copy-btn" onclick="copyText('install-cmd', this)" title="Copy to clipboard">
               <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -102,7 +88,7 @@
         </div>
       </div>
       <div class="hero-platforms">
-        windows-x64 · windows-arm64 · linux-x64 (WSL) · linux-arm64 (WSL)
+        windows-x64 · windows-arm64
       </div>
     </div>
   </section>
@@ -113,7 +99,7 @@
       <h2 class="section-title">Why?</h2>
       <p class="section-sub">AI agents on Windows need WSL. But they can't manage it — until now.</p>
       <div class="two-col">
-        <div class="col problem">
+        <div class="col">
           <h2>The problem</h2>
           <p>When AI agents work on Windows with WSL:</p>
           <ul>
@@ -124,7 +110,7 @@
             <li><span class="icon-bad">✗</span> Raw <code>wsl.exe</code> calls with no structure</li>
           </ul>
         </div>
-        <div class="col solution">
+        <div class="col">
           <h2>The solution</h2>
           <p>Give the agent structured WSL access:</p>
           <ul>
@@ -143,10 +129,10 @@
   <section class="section section-dark" id="how">
     <div class="section-inner">
       <h2 class="section-title">How it works</h2>
-      <p class="section-sub">The agent discovers distros, runs commands, and manages files — all through MCP tools.</p>
+      <p class="section-sub">The agent discovers distros, runs commands, and manages files — all through MCP tools. You just approve.</p>
       <div class="demo-container">
         <div class="demo-placeholder">
-          <img src="screengrabs/wsl-mcp-demo-placeholder.png" alt="wsl-mcp demo — Copilot CLI running tasks inside a WSL distro" class="demo-img">
+          <img src="screengrabs/wsl-mcp-demo-placeholder.png" alt="wsl-mcp demo">
           <div class="demo-overlay">
             <span class="demo-label">📹 Demo coming soon</span>
             <span class="demo-desc">Copilot CLI using wsl-mcp to run tasks inside a WSL distro</span>
@@ -203,19 +189,19 @@
   </section>
 
   <!-- Config -->
-  <section class="section section-dark" id="config">
+  <section class="section section-dark">
     <div class="section-inner">
       <h2 class="section-title">One-line setup</h2>
       <p class="section-sub">Add to any MCP-compatible client.</p>
       <div class="config-box">
-        <pre><code>{
+        <div class="code-block"><pre>{
   "mcpServers": {
     "wsl-mcp": {
       "command": "wsl-mcp",
       "args": ["serve"]
     }
   }
-}</code></pre>
+}</pre></div>
       </div>
     </div>
   </section>
@@ -224,7 +210,7 @@
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-left">
-        <span class="logo-icon">⬡</span> wsl-mcp
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Logo_WSL_Square44x44Logo.altform-lightunplated_targetsize-256.svg" alt="WSL"> wsl-mcp
         <span class="footer-sep">·</span>
         MIT License
       </div>
@@ -250,14 +236,6 @@
           btn.classList.remove('copied');
         }, 2000);
       });
-    }
-
-    function switchInstallTab(platform, btn) {
-      document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      const isWindows = platform === 'windows';
-      document.getElementById('install-windows').style.display = isWindows ? 'flex' : 'none';
-      document.getElementById('install-unix').style.display = isWindows ? 'none' : 'flex';
     }
   </script>
 </body>
