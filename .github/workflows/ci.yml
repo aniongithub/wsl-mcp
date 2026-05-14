@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    name: Check & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build and test in devcontainer
+        uses: devcontainers/ci@v0.3
+        with:
+          push: never
+          runCmd: |
+            cargo fmt --all -- --check
+            cargo check -p wsl-mcp-core -p wsl-mcp
+            cargo test -p wsl-mcp-core -p wsl-mcp
+            cargo clippy -p wsl-mcp-core -p wsl-mcp -- -D warnings
