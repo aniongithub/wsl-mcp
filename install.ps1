@@ -17,11 +17,12 @@ $Repo = "aniongithub/wsl-mcp"
 # ── Detect architecture ─────────────────────────────────────────
 
 function Get-Platform {
-    $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture
+    $arch = $env:PROCESSOR_ARCHITECTURE
     switch ($arch) {
-        "X64"   { return "windows-x64" }
-        "Arm64" { return "windows-arm64" }
-        default { throw "Unsupported architecture: $arch" }
+        "AMD64"  { return "windows-x64" }
+        "x86"    { return "windows-x64" }
+        "ARM64"  { return "windows-arm64" }
+        default  { throw "Unsupported architecture: $arch" }
     }
 }
 
