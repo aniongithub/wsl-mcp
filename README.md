@@ -149,7 +149,7 @@ devcontainer exec --workspace-folder . cargo test --workspace
 ### CI/CD
 
 - **Pull Requests** — `cargo check`, `cargo test`, `cargo clippy`, `cargo fmt` run automatically
-- **Releases** — Creating a GitHub release builds binaries for Windows (x64, arm64) and Linux (x64, arm64)
+- **Releases** — Creating a GitHub release builds binaries for Windows (x64, arm64)
 
 ## License
 

@@ -8,39 +8,6 @@ permissions:
   contents: write
 
 jobs:
-  build-linux:
-    name: Build Linux binaries
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Build all targets in devcontainer
-        uses: devcontainers/ci@v0.3
-        with:
-          push: never
-          runCmd: |
-            set -e
-
-            sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu
-            rustup target add aarch64-unknown-linux-gnu x86_64-unknown-linux-gnu
-
-            cargo build --release --target x86_64-unknown-linux-gnu -p wsl-mcp
-            CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc \
-              cargo build --release --target aarch64-unknown-linux-gnu -p wsl-mcp
-
-            tar czf wsl-mcp-linux-x64.tar.gz -C target/x86_64-unknown-linux-gnu/release wsl-mcp
-            tar czf wsl-mcp-linux-arm64.tar.gz -C target/aarch64-unknown-linux-gnu/release wsl-mcp
-
-      - name: Upload linux-x64
-        uses: softprops/action-gh-release@v3
-        with:
-          files: wsl-mcp-linux-x64.tar.gz
-
-      - name: Upload linux-arm64
-        uses: softprops/action-gh-release@v3
-        with:
-          files: wsl-mcp-linux-arm64.tar.gz
-
   build-windows:
     name: Build ${{ matrix.artifact }}
     runs-on: windows-latest
