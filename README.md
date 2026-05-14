@@ -34,6 +34,16 @@ Agent: "Let me build this project..."
   → ✅ Everything happens inside WSL. Windows host untouched.
 ```
 
+## Quick Install
+
+### Windows (PowerShell)
+
+```powershell
+irm https://github.com/aniongithub/wsl-mcp/releases/latest/download/install.ps1 | iex
+```
+
+> **How it works:** Downloads `wsl-mcp.exe` to `%LOCALAPPDATA%\Programs\wsl-mcp`, adds it to PATH, installs the SKILL.md for agent discovery, configures host-protection hooks, and sets up MCP server entries for GitHub Copilot, VS Code, Cursor, and Claude Code — all in one step.
+
 ## Architecture
 
 ```mermaid
@@ -95,6 +105,8 @@ graph TD
 
 ## MCP Server Configuration
 
+The installer configures this automatically. To set up manually:
+
 ```json
 {
   "mcpServers": {
@@ -105,6 +117,15 @@ graph TD
   }
 }
 ```
+
+## Host Protection
+
+`wsl-mcp` includes hooks that keep agents honest:
+
+- **`wsl-guard`** (PreToolUse) — when a WSL context is detected, blocks direct bash/shell commands on the Windows host and redirects the agent to use `wsl_exec`, `wsl_shell`, and file operation tools instead. Host-safe commands (`git`, `gh`) are always allowed through.
+- **`wsl-skill-loader`** (SessionStart) — automatically injects the SKILL.md into the agent's context when a WSL environment is detected, so the agent knows how to use the tools without being told.
+
+WSL context is detected via `WSL_DISTRO_NAME` env var, `/proc/sys/fs/binfmt_misc/WSLInterop`, or a `.wsl-mcp.json` marker file in the project root.
 
 ## Prerequisites
 
