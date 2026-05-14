@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": "./.github/hooks/wsl-skill-loader.sh",
+        "timeoutSec": 5
+      }
+    ]
+  }
+}

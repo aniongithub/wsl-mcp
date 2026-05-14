@@ -71,3 +71,13 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: ${{ matrix.artifact }}.zip
+
+  upload-install-script:
+    name: Upload install script
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Upload install.ps1
+        uses: softprops/action-gh-release@v3
+        with:
+          files: install.ps1
