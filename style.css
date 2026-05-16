@@ -135,12 +135,7 @@ code { font-family: var(--mono); font-size: 0.875em; }
 .tool-group ul { list-style: none; font-family: var(--mono); font-size: 0.8rem; color: var(--text-dim); display: flex; flex-direction: column; gap: 0.3rem; }
 
 /* ---- Config code block ---- */
-.config-box { max-width: 500px; margin: 0 auto; }
-.code-block {
-  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 1rem 1.2rem; font-family: var(--mono); font-size: 0.85rem; color: var(--green); overflow-x: auto;
-}
-.code-block pre { font-family: inherit; margin: 0; color: var(--text-dim); }
+
 
 /* ---- Footer ---- */
 .footer { border-top: 1px solid var(--border); padding: 2rem; }
