@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::cli::{run_wsl, CliOutput};
+use crate::cli::{run_wsl, run_wsl_streaming, CliOutput, OutputLine};
 use crate::error::{Error, Result};
 
 /// A WSL distribution entry from `wsl --list --verbose`.
@@ -123,6 +123,56 @@ pub async fn shell(distro: &str, command: &str, user: Option<&str>) -> Result<Cl
     args.push("-lc");
     args.push(command);
     run_wsl(&args, false).await
+}
+
+/// Execute a command with streaming output, returning a line receiver and a
+/// join handle for the final result.
+pub async fn exec_streaming(
+    distro: &str,
+    command: &str,
+    workdir: Option<&str>,
+    user: Option<&str>,
+) -> Result<(
+    tokio::sync::mpsc::Receiver<OutputLine>,
+    tokio::task::JoinHandle<Result<CliOutput>>,
+)> {
+    let mut args: Vec<String> = vec!["-d".into(), distro.into()];
+    if let Some(dir) = workdir {
+        args.push("--cd".into());
+        args.push(dir.into());
+    }
+    if let Some(u) = user {
+        args.push("-u".into());
+        args.push(u.into());
+    }
+    args.push("--".into());
+    args.push("sh".into());
+    args.push("-c".into());
+    args.push(command.into());
+    let refs: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
+    run_wsl_streaming(&refs).await
+}
+
+/// Execute a command in a login shell with streaming output.
+pub async fn shell_streaming(
+    distro: &str,
+    command: &str,
+    user: Option<&str>,
+) -> Result<(
+    tokio::sync::mpsc::Receiver<OutputLine>,
+    tokio::task::JoinHandle<Result<CliOutput>>,
+)> {
+    let mut args: Vec<String> = vec!["-d".into(), distro.into()];
+    if let Some(u) = user {
+        args.push("-u".into());
+        args.push(u.into());
+    }
+    args.push("--".into());
+    args.push("bash".into());
+    args.push("-lc".into());
+    args.push(command.into());
+    let refs: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
+    run_wsl_streaming(&refs).await
 }
 
 // ---------------------------------------------------------------------------
