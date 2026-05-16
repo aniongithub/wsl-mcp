@@ -1,8 +1,17 @@
 use serde::Serialize;
 use std::process::Stdio;
+use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::process::Command;
+use tokio::sync::mpsc;
 
 use crate::error::{Error, Result};
+
+/// A line of output from a streaming process.
+#[derive(Debug, Clone)]
+pub enum OutputLine {
+    Stdout(String),
+    Stderr(String),
+}
 
 /// Raw output from a CLI invocation.
 #[derive(Debug, Clone, Serialize)]
@@ -101,6 +110,81 @@ pub async fn run_wsl(args: &[&str], parse_json: bool) -> Result<CliOutput> {
         stderr,
         json,
     })
+}
+
+/// Run `wsl.exe` with streaming output, sending lines via a channel.
+///
+/// Spawns the process with piped stdout/stderr, reads line-by-line, and
+/// sends each line through the returned receiver. The final `CliOutput`
+/// is returned when the process exits.
+pub async fn run_wsl_streaming(
+    args: &[&str],
+) -> Result<(mpsc::Receiver<OutputLine>, tokio::task::JoinHandle<Result<CliOutput>>)> {
+    let mut child = Command::new("wsl.exe")
+        .args(args)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .map_err(|e| {
+            if e.kind() == std::io::ErrorKind::NotFound {
+                Error::WslNotFound
+            } else {
+                Error::Io(e)
+            }
+        })?;
+
+    let stdout = child.stdout.take().expect("stdout piped");
+    let stderr = child.stderr.take().expect("stderr piped");
+
+    // Channel for streaming lines to the caller
+    let (tx, rx) = mpsc::channel::<OutputLine>(256);
+
+    let handle = tokio::spawn(async move {
+        let tx_out = tx.clone();
+        let tx_err = tx;
+
+        // Read stdout and stderr concurrently
+        let stdout_task = tokio::spawn(async move {
+            let mut collected = String::new();
+            let reader = BufReader::new(stdout);
+            let mut lines = reader.lines();
+            while let Ok(Some(line)) = lines.next_line().await {
+                collected.push_str(&line);
+                collected.push('\n');
+                // Best-effort send; if receiver dropped, just keep collecting
+                let _ = tx_out.send(OutputLine::Stdout(line)).await;
+            }
+            collected
+        });
+
+        let stderr_task = tokio::spawn(async move {
+            let mut collected = String::new();
+            let reader = BufReader::new(stderr);
+            let mut lines = reader.lines();
+            while let Ok(Some(line)) = lines.next_line().await {
+                collected.push_str(&line);
+                collected.push('\n');
+                let _ = tx_err.send(OutputLine::Stderr(line)).await;
+            }
+            collected
+        });
+
+        let (stdout_result, stderr_result) = tokio::join!(stdout_task, stderr_task);
+        let stdout_buf = stdout_result.unwrap_or_default();
+        let stderr_buf = stderr_result.unwrap_or_default();
+
+        let status = child.wait().await.map_err(Error::Io)?;
+        let exit_code = status.code().unwrap_or(-1);
+
+        Ok(CliOutput {
+            exit_code,
+            stdout: stdout_buf,
+            stderr: stderr_buf,
+            json: None,
+        })
+    });
+
+    Ok((rx, handle))
 }
 
 #[cfg(test)]
