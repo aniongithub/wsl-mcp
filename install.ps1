@@ -56,6 +56,13 @@ $TempZip = Join-Path $env:TEMP $ZipName
 Write-Host "==> Downloading $ZipName..."
 Invoke-WebRequest -Uri $DownloadUrl -OutFile $TempZip -UseBasicParsing
 
+# Stop any running wsl-mcp processes so the exe isn't locked
+Get-Process -Name "wsl-mcp" -ErrorAction SilentlyContinue | ForEach-Object {
+    Write-Host "==> Stopping running wsl-mcp (PID $($_.Id))..."
+    $_ | Stop-Process -Force
+}
+Start-Sleep -Milliseconds 500
+
 Write-Host "==> Extracting to $InstallDir..."
 Expand-Archive -Path $TempZip -DestinationPath $InstallDir -Force
 Remove-Item $TempZip -ErrorAction SilentlyContinue
