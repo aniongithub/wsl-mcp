@@ -238,31 +238,37 @@ if ($SkipMcpConfig) {
 function Configure-McpClient {
     param([string]$ConfigFile, [string]$ClientName)
 
-    if (-not (Test-Path $ConfigFile)) {
-        New-Item -ItemType Directory -Force -Path (Split-Path $ConfigFile) | Out-Null
-        @{
-            mcpServers = @{
-                "wsl-mcp" = @{
-                    command = $BinaryPath
-                    args = @("serve")
+    $mcpServerEntry = @{
+        command = $BinaryPath
+        args    = @("serve")
+    }
+
+    try {
+        if (Test-Path $ConfigFile) {
+            $content = Get-Content -Raw $ConfigFile | ConvertFrom-Json
+            if (-not $content.mcpServers) {
+                $content | Add-Member -NotePropertyName "mcpServers" -NotePropertyValue ([PSCustomObject]@{})
+            }
+            if ($content.mcpServers.PSObject.Properties.Name -contains "wsl-mcp") {
+                Write-Host "  > $ClientName -- already configured"
+                return
+            }
+            $content.mcpServers | Add-Member -NotePropertyName "wsl-mcp" -NotePropertyValue ([PSCustomObject]$mcpServerEntry)
+            $content | ConvertTo-Json -Depth 10 | Set-Content $ConfigFile -Encoding UTF8
+            Write-Host "  > $ClientName -- added to $ConfigFile"
+        } else {
+            $dir = Split-Path $ConfigFile -Parent
+            if ($dir) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+            $config = [PSCustomObject]@{
+                mcpServers = [PSCustomObject]@{
+                    "wsl-mcp" = [PSCustomObject]$mcpServerEntry
                 }
             }
-        } | ConvertTo-Json -Depth 5 | Set-Content $ConfigFile
-        Write-Host "  > $ClientName -- created $ConfigFile"
-    } else {
-        try {
-            $config = Get-Content $ConfigFile -Raw | ConvertFrom-Json -AsHashtable
-            if (-not $config.ContainsKey("mcpServers")) { $config["mcpServers"] = @{} }
-            if (-not $config.mcpServers.ContainsKey("wsl-mcp")) {
-                $config.mcpServers["wsl-mcp"] = @{ command = $BinaryPath; args = @("serve") }
-                $config | ConvertTo-Json -Depth 5 | Set-Content $ConfigFile
-                Write-Host "  > $ClientName -- added to $ConfigFile"
-            } else {
-                Write-Host "  > $ClientName -- already configured"
-            }
-        } catch {
-            Write-Host "  ! $ClientName -- could not update $ConfigFile"
+            $config | ConvertTo-Json -Depth 10 | Set-Content $ConfigFile -Encoding UTF8
+            Write-Host "  > $ClientName -- created $ConfigFile"
         }
+    } catch {
+        Write-Host "  ! $ClientName -- could not update $ConfigFile"
     }
 }
 
