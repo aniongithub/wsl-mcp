@@ -1,0 +1,7 @@
+# Statically link the C runtime on Windows so the binary is fully
+# self-contained (no vcruntime140.dll dependency).
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]
+
+[target.aarch64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]
