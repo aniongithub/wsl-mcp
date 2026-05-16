@@ -241,6 +241,7 @@ function Configure-McpClient {
     $mcpServerEntry = @{
         command = $BinaryPath
         args    = @("serve")
+        type    = "local"
     }
 
     try {
