@@ -126,11 +126,6 @@ code { font-family: var(--mono); font-size: 0.875em; }
 /* ---- Demo ---- */
 .demo-container { max-width: 700px; margin: 0 auto; }
 .demo-gif { max-width: 100%; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
-.demo-placeholder { position: relative; background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; }
-.demo-placeholder img { width: 100%; display: block; opacity: 0.5; }
-.demo-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; }
-.demo-label { font-size: 1.2rem; font-weight: 600; color: var(--text); }
-.demo-desc { font-size: 0.9rem; color: var(--text-dim); }
 
 /* ---- Tools grid ---- */
 .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
